@@ -25,7 +25,7 @@
   .credit{position:fixed;right:12px;top:16px;font-size:11px;opacity:.5;pointer-events:none;text-align:right;max-width:44vw}
   .fps{position:fixed;left:18px;bottom:calc(20px + env(safe-area-inset-bottom));font-size:11px;opacity:.55;pointer-events:none}
   .fail{position:fixed;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:30px;font-size:16px}
-  @media (max-width:560px){.credit,.fps{display:none}input[type=range]{width:110px}.bar{gap:8px;padding:8px 10px}.title h1{font-size:19px}}
+  @media (max-width:560px){.credit,.fps{display:none}.tod span{display:none}input[type=range]{width:96px}.bar{gap:6px;padding:7px 9px;font-size:13px}button{padding:6px 9px}.title h1{font-size:19px}}
 </style>
 </head>
 <body>
@@ -237,7 +237,7 @@ function writeSplat(i,px,py,pz,sx,sy,sz,op){const o=i*16;data[o]=px;data[o+1]=py
 
 // ---------- state ----------
 let introT=0,introDone=false,tod=.72,tour=true,lastInput=-9,time=0;
-let yaw=.7,pitch=.32,dist=15,tYaw=.7,tPitch=.32,tDist=12.5;
+const PORT=innerWidth<innerHeight;let yaw=.7,pitch=.32,dist=15,tYaw=.7,tPitch=.32,tDist=PORT?14:12.5;
 const swirlSeed=new Float32Array(N*3);for(let i=0;i<N*3;i++)swirlSeed[i]=gauss();
 const ease=t=>t<0?0:t>1?1:t*t*(3-2*t);
 function writeIntro(e){
@@ -312,14 +312,14 @@ function sortSplats(f,e){
 const CUR2=new Float32Array(N);
 
 // ---------- frame ----------
-let last=performance.now(),fpsT=0,fpsN=0;const fpsEl=document.getElementById('fps');
+let fcount=0,last=performance.now(),fpsT=0,fpsN=0;const fpsEl=document.getElementById('fps');
 function frame(now,still){
   const raw=still?0:(now-last)/1000,dt=Math.min(.05,raw);last=now;time+=dt;
   if(!introDone){introT+=raw/2.8;if(introT>=1){introT=1;introDone=true;}writeIntro(introT);}
   else writeFireflyRow();
   // camera
   const idle=time-lastInput;
-  if(tour&&idle>3&&introDone){tYaw+=dt*.07;tPitch=.28+.12*Math.sin(time*.13);tDist=11+2.5*Math.sin(time*.1);}
+  if(tour&&idle>3&&introDone){tYaw+=dt*.07;tPitch=.28+.12*Math.sin(time*.13);tDist=(PORT?13.5:11)+2.5*Math.sin(time*.1);}
   const k=1-Math.pow(.0015,dt);yaw+=(tYaw-yaw)*k;pitch+=(tPitch-pitch)*k;dist+=(tDist-dist)*k*.8;
   const tgt=[0,.7,0];const cp=Math.cos(pitch),sp_=Math.sin(pitch);
   const eye=[tgt[0]+dist*cp*Math.sin(yaw),tgt[1]+dist*sp_,tgt[2]+dist*cp*Math.cos(yaw)];
@@ -333,7 +333,7 @@ function frame(now,still){
   gl.uniform3fv(sky.u.uZen,sm.zen);gl.uniform3fv(sky.u.uHor,sm.hor);gl.uniform3fv(sky.u.uSun,sunDir);gl.uniform1f(sky.u.uNight,night);gl.uniform1f(sky.u.uTime,time);
   gl.drawArrays(gl.TRIANGLE_STRIP,0,4);
   // splats
-  sortSplats(L.f,eye);
+  if(still||(fcount++&1)===0)sortSplats(L.f,eye);
   gl.useProgram(sp.p);gl.bindVertexArray(vaoS);gl.enable(gl.BLEND);gl.blendFuncSeparate(gl.SRC_ALPHA,gl.ONE_MINUS_SRC_ALPHA,gl.ONE,gl.ONE_MINUS_SRC_ALPHA);
   gl.activeTexture(gl.TEXTURE0);gl.bindTexture(gl.TEXTURE_2D,dtex);gl.uniform1i(sp.u.uData,0);
   gl.uniformMatrix4fv(sp.u.uView,false,L.m);gl.uniformMatrix4fv(sp.u.uProj,false,proj);gl.uniform2f(sp.u.uVP,W_,H_);
