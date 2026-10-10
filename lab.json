@@ -1,9 +1,14 @@
 {
   "slug": "splat-studio",
-  "title": "Splat Studio",
-  "tagline": "Drag a cloud of glowing splats into view, then switch on local PCA and watch its fuzzy geometry settle into a surface.",
+  "title": "Splat Island",
+  "tagline": "A floating dream island made of 40,960 glowing Gaussian splats, rendered live. Orbit it from dawn to midnight.",
   "kind": "demo",
-  "tags": ["graphics", "webgl", "research", "interactive"],
+  "tags": [
+    "graphics",
+    "webgl",
+    "research",
+    "interactive"
+  ],
   "date": "2026-10-10",
   "builtBy": "Virtual Company",
   "entry": "demo/index.html",
@@ -22,8 +27,8 @@
       "Tiago Novello"
     ]
   },
-  "novelty": "A procedural, interactive visualization of Gaussian splats with an on/off local-shape regularization effect; no known implementation (not verified).",
-  "description": "Orbit a glowing procedural scene made of Gaussian-like splats, then compare the irregular view with a PCA-inspired surface-aligned view.",
-  "howItWorks": "An offline WebGL2 renderer draws procedural splats as instanced camera-facing quads. The regularization control interpolates their shape from varied blobs toward flattened surface-oriented marks, illustrating the local PCA geometric signal. This is a visual analogy on synthetic geometry, not PCAsplat training or a learned scene.",
-  "controls": "Drag to orbit; wheel or pinch to zoom; use the REGULARIZE switch to compare the surface-aligned view; adjust Splat density from 5,000 to 40,000."
+  "novelty": "A hand-written, dependency-free WebGL2 Gaussian splat renderer with a procedural scene; no known implementation of this exact scene (not verified).",
+  "description": "Fly around a procedural floating island (blossom tree, pond, fireflies, crystal islets) rendered by a from-scratch WebGL2 Gaussian splat renderer with a time-of-day slider and PNG snapshot.",
+  "howItWorks": "40,960 anisotropic 3D Gaussians are depth-sorted on the CPU each frame and drawn as instanced quads whose 2D covariance comes from the projected 3D covariance. Surface splats are flattened into discs aligned to the local surface using a local PCA of neighbouring splat positions (the smallest-variance axis is the normal), the idea behind PCAsplat. No training or learned scene is involved.",
+  "controls": "Drag to orbit; wheel or pinch to zoom; time-of-day slider; Tour toggles the idle camera; Replay re-plays the build-up; Snap saves a PNG."
 }
