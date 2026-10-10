@@ -1,0 +1,29 @@
+{
+  "slug": "splat-studio",
+  "title": "Splat Studio",
+  "tagline": "Drag a cloud of glowing splats into view, then switch on local PCA and watch its fuzzy geometry settle into a surface.",
+  "kind": "demo",
+  "tags": ["graphics", "webgl", "research", "interactive"],
+  "date": "2026-10-10",
+  "builtBy": "Virtual Company",
+  "entry": "demo/index.html",
+  "paper": {
+    "title": "PCAsplat: Gaussian Splatting with Local PCA Regularization",
+    "arxiv": "2610.11011",
+    "authors": [
+      "Vitor Matias",
+      "Filipe Nascimento",
+      "Kiyohiro Nakayama",
+      "João Paulo Lima",
+      "Márcus Lobo",
+      "Gordon Wetzstein",
+      "Leonidas Guibas",
+      "Afonso Paiva",
+      "Tiago Novello"
+    ]
+  },
+  "novelty": "A procedural, interactive visualization of Gaussian splats with an on/off local-shape regularization effect; no known implementation (not verified).",
+  "description": "Orbit a glowing procedural scene made of Gaussian-like splats, then compare the irregular view with a PCA-inspired surface-aligned view.",
+  "howItWorks": "An offline WebGL2 renderer draws procedural splats as instanced camera-facing quads. The regularization control interpolates their shape from varied blobs toward flattened surface-oriented marks, illustrating the local PCA geometric signal. This is a visual analogy on synthetic geometry, not PCAsplat training or a learned scene.",
+  "controls": "Drag to orbit; wheel or pinch to zoom; use the REGULARIZE switch to compare the surface-aligned view; adjust Splat density from 5,000 to 40,000."
+}
