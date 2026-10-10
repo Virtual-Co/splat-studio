@@ -30,5 +30,5 @@
   "novelty": "A hand-written, dependency-free WebGL2 Gaussian splat renderer with a procedural scene; no known implementation of this exact scene (not verified).",
   "description": "Fly around a procedural floating island (blossom tree, pond, fireflies, crystal islets) rendered by a from-scratch WebGL2 Gaussian splat renderer with a time-of-day slider and PNG snapshot.",
   "howItWorks": "40,960 anisotropic 3D Gaussians are depth-sorted on the CPU each frame and drawn as instanced quads whose 2D covariance comes from the projected 3D covariance. Surface splats are flattened into discs aligned to the local surface using a local PCA of neighbouring splat positions (the smallest-variance axis is the normal), the idea behind PCAsplat. No training or learned scene is involved.",
-  "controls": "Drag to orbit; wheel or pinch to zoom; time-of-day slider; Tour toggles the idle camera; Replay re-plays the build-up; Snap saves a PNG."
+  "controls": "Drag to orbit; wheel or pinch to zoom; time-of-day slider; Fly tour glides the camera through the scene when idle; WASD or arrow keys glide manually; Replay re-plays the build-up; Snap saves a PNG."
 }

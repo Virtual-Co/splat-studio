@@ -22,20 +22,20 @@
   button{font:inherit;color:var(--fg);background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.16);border-radius:999px;padding:7px 12px;cursor:pointer;flex:none}
   button:hover{background:rgba(255,255,255,.2)}
   button.on{background:rgba(255,255,255,.3)}
-  .credit{position:fixed;right:12px;top:16px;font-size:11px;opacity:.5;pointer-events:none;text-align:right;max-width:44vw}
+  .credit{position:fixed;right:12px;top:16px;font-size:11px;opacity:.6;pointer-events:none;text-align:right;max-width:46vw;text-shadow:0 1px 8px rgba(0,0,0,.6)}
   .fps{position:fixed;left:18px;bottom:calc(20px + env(safe-area-inset-bottom));font-size:11px;opacity:.55;pointer-events:none}
   .fail{position:fixed;inset:0;display:none;align-items:center;justify-content:center;text-align:center;padding:30px;font-size:16px}
-  @media (max-width:560px){.credit,.fps{display:none}.tod span{display:none}input[type=range]{width:96px}.bar{gap:6px;padding:7px 9px;font-size:13px}button{padding:6px 9px}.title h1{font-size:19px}}
+  @media (max-width:560px){.fps{display:none}.credit{top:auto;bottom:calc(66px + env(safe-area-inset-bottom));right:0;left:0;text-align:center;max-width:none;font-size:9px;padding:0 10px}.tod span{display:none}input[type=range]{width:96px}.bar{gap:6px;padding:7px 9px;font-size:13px}button{padding:6px 9px}.title h1{font-size:19px}}
 </style>
 </head>
 <body>
 <canvas id="c"></canvas>
-<div class="title"><h1>SPLAT ISLAND</h1><p>A dream island built from 40,960 soft Gaussian blobs, rendered live. Drag to orbit, pinch or scroll to zoom.</p></div>
-<div class="credit">Surfaces flattened by local PCA, after PCAsplat (arXiv 2610.11011)</div>
+<div class="title"><h1>SPLAT ISLAND</h1><p>A dream island built from 40,960 soft Gaussian blobs, rendered live. Drag to orbit, pinch or scroll to zoom, WASD to glide.</p></div>
+<div class="credit">Technique: PCAsplat, Gaussian Splatting with Local PCA Regularization<br>Matias, Nascimento, Nakayama, Lima, Lobo, Wetzstein, Guibas, Paiva, Novello · arXiv 2610.11011</div>
 <div class="fps" id="fps"></div>
 <div class="bar">
   <div class="tod"><span>Night</span><input id="tod" type="range" min="0" max="1000" value="720" aria-label="Time of day"><span>Day</span></div>
-  <button id="tour" class="on">Tour</button>
+  <button id="tour" class="on">Fly tour</button>
   <button id="again">Replay</button>
   <button id="snap">Snap</button>
 </div>
@@ -236,7 +236,7 @@ function writeSplat(i,px,py,pz,sx,sy,sz,op){const o=i*16;data[o]=px;data[o+1]=py
   data[o+8]=Q[i*4];data[o+9]=Q[i*4+1];data[o+10]=Q[i*4+2];data[o+11]=Q[i*4+3];data[o+12]=C[i*4];data[o+13]=C[i*4+1];data[o+14]=C[i*4+2];data[o+15]=C[i*4+3];CUR[i*3]=px;CUR[i*3+1]=py;CUR[i*3+2]=pz;}
 
 // ---------- state ----------
-let introT=0,introDone=false,tod=.72,tour=true,lastInput=-9,time=0;
+const RM=matchMedia&&matchMedia('(prefers-reduced-motion: reduce)').matches;let introT=0,introDone=false,tod=.72,tour=!RM,lastInput=-9,time=0;
 const PORT=innerWidth<innerHeight;let yaw=.7,pitch=.32,dist=15,tYaw=.7,tPitch=.32,tDist=PORT?14:12.5;
 const swirlSeed=new Float32Array(N*3);for(let i=0;i<N*3;i++)swirlSeed[i]=gauss();
 const ease=t=>t<0?0:t>1?1:t*t*(3-2*t);
@@ -253,7 +253,7 @@ function writeIntro(e){
   for(let i=SURF;i<N;i++)writeFirefly(i-SURF);
   gl.bindTexture(gl.TEXTURE_2D,dtex);gl.texSubImage2D(gl.TEXTURE_2D,0,0,0,W,ROWS,gl.RGBA,gl.FLOAT,data);
 }
-function writeFirefly(j){const f=FF[j],i=SURF+j,a=f.a+time*f.s,r=f.r*(1+.08*Math.sin(time*.7+f.p));
+function writeFirefly(j){const f=FF[j],i=SURF+j,a=f.a+time*f.s*(RM?.15:1),r=f.r*(1+.08*Math.sin(time*.7+f.p));
   const x=Math.cos(a)*r,z=Math.sin(a)*r,y=f.y+.5*Math.sin(time*.9+f.p)+(f.r<3?.4:0);
   const fl=.5+.5*Math.sin(time*3+f.ph);const night=nightAmt();
   writeSplat(i,x,y,z,.04,.04,.04,(.25+.75*fl)*(.35+.65*night));}
@@ -312,6 +312,9 @@ function sortSplats(f,e){
 const CUR2=new Float32Array(N);
 
 // ---------- frame ----------
+const flyT=[0,.7,0],flyG=[0,.7,0];let kx=0,kz=0,keyHeld=false;
+addEventListener('keydown',e=>{const k=e.key.toLowerCase();if(k==='w'||k==='arrowup')kz=1;else if(k==='s'||k==='arrowdown')kz=-1;else if(k==='a'||k==='arrowleft')kx=-1;else if(k==='d'||k==='arrowright')kx=1;else return;keyHeld=true;lastInput=time;});
+addEventListener('keyup',e=>{const k=e.key.toLowerCase();if(k==='w'||k==='arrowup'||k==='s'||k==='arrowdown')kz=0;if(k==='a'||k==='arrowleft'||k==='d'||k==='arrowright')kx=0;keyHeld=!!(kx||kz);});
 let fcount=0,last=performance.now(),fpsT=0,fpsN=0;const fpsEl=document.getElementById('fps');
 function frame(now,still){
   const raw=still?0:(now-last)/1000,dt=Math.min(.05,raw);last=now;time+=dt;
@@ -319,9 +322,12 @@ function frame(now,still){
   else writeFireflyRow();
   // camera
   const idle=time-lastInput;
+  if(tour&&idle>3&&introDone){const a=time*.11;flyG[0]=3.3*Math.sin(a)+1.2*Math.sin(a*2.3);flyG[1]=.8+.7*(.5+.5*Math.sin(time*.23));flyG[2]=3.0*Math.cos(a*.9);}else if(!keyHeld){flyG[0]=0;flyG[1]=.7;flyG[2]=0;}
+  if(keyHeld){const sp=3.2*dt,cy=Math.cos(yaw),sy=Math.sin(yaw);flyG[0]=clamp(flyG[0]+(-sy*kz+cy*kx)*sp*-1,-6,6);flyG[2]=clamp(flyG[2]+(-cy*kz-sy*kx)*sp*-1,-6,6);}
+  const kf=1-Math.pow(.01,dt);for(let q=0;q<3;q++)flyT[q]+=(flyG[q]-flyT[q])*kf;
   if(tour&&idle>3&&introDone){tYaw+=dt*.07;tPitch=.28+.12*Math.sin(time*.13);tDist=(PORT?13.5:11)+2.5*Math.sin(time*.1);}
   const k=1-Math.pow(.0015,dt);yaw+=(tYaw-yaw)*k;pitch+=(tPitch-pitch)*k;dist+=(tDist-dist)*k*.8;
-  const tgt=[0,.7,0];const cp=Math.cos(pitch),sp_=Math.sin(pitch);
+  const tgt=flyT;const cp=Math.cos(pitch),sp_=Math.sin(pitch);
   const eye=[tgt[0]+dist*cp*Math.sin(yaw),tgt[1]+dist*sp_,tgt[2]+dist*cp*Math.cos(yaw)];
   const L=lookAt(eye,tgt);const asp=W_/H_;const fov=asp<1?1.05:.85;const proj=mat4Persp(fov,asp,.1,80);
   const sm=todSample(tod),night=nightAmt();
@@ -342,6 +348,7 @@ function frame(now,still){
   if(!still){fpsN++;fpsT+=dt;if(fpsT>.5){fpsEl.textContent=Math.round(fpsN/fpsT)+' fps · '+N.toLocaleString()+' splats';fpsT=0;fpsN=0;}}
 }
 function loop(now){frame(now,false);requestAnimationFrame(loop);}
+if(RM){introT=1;introDone=true;writeIntro(1);tourBtn.classList.remove('on');}
 if(location.hash==='#still'){introT=1;introDone=true;writeIntro(1);}
 requestAnimationFrame(loop);
 window.__splat={N,get intro(){return introT}};
