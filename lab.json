@@ -1,34 +1,19 @@
-{
+﻿{
   "slug": "splat-studio",
-  "title": "Splat Island",
-  "tagline": "A floating dream island made of 40,960 glowing Gaussian splats, rendered live. Orbit it from dawn to midnight.",
-  "kind": "demo",
-  "tags": [
-    "graphics",
-    "webgl",
-    "research",
-    "interactive"
-  ],
+  "title": "Splat Studio",
+  "tagline": "Train a 3D Gaussian Splat from photos live in your browser GPU, then download it.",
+  "kind": "tool",
+  "tags": ["graphics", "webgpu", "research", "3d", "interactive"],
   "date": "2026-10-10",
   "builtBy": "Virtual Company",
   "entry": "demo/index.html",
   "paper": {
     "title": "PCAsplat: Gaussian Splatting with Local PCA Regularization",
     "arxiv": "2610.11011",
-    "authors": [
-      "Vitor Matias",
-      "Filipe Nascimento",
-      "Kiyohiro Nakayama",
-      "João Paulo Lima",
-      "Márcus Lobo",
-      "Gordon Wetzstein",
-      "Leonidas Guibas",
-      "Afonso Paiva",
-      "Tiago Novello"
-    ]
+    "authors": ["Vitor Matias", "Filipe Nascimento", "Kiyohiro Nakayama", "João Paulo Lima", "Márcus Lobo", "Gordon Wetzstein", "Leonidas Guibas", "Afonso Paiva", "Tiago Novello"]
   },
-  "novelty": "A hand-written, dependency-free WebGL2 Gaussian splat renderer with a procedural scene; no known implementation of this exact scene (not verified).",
-  "description": "Fly around a procedural floating island (blossom tree, pond, fireflies, crystal islets) rendered by a from-scratch WebGL2 Gaussian splat renderer with a time-of-day slider and PNG snapshot.",
-  "howItWorks": "40,960 anisotropic 3D Gaussians are depth-sorted on the CPU each frame and drawn as instanced quads whose 2D covariance comes from the projected 3D covariance. Surface splats are flattened into discs aligned to the local surface using a local PCA of neighbouring splat positions (the smallest-variance axis is the normal), the idea behind PCAsplat. No training or learned scene is involved.",
-  "controls": "Drag to orbit; wheel or pinch to zoom; time-of-day slider; Fly tour glides the camera through the scene when idle; WASD or arrow keys glide manually; Replay re-plays the build-up; Snap saves a PNG."
+  "novelty": "A from-scratch WebGPU 3D Gaussian Splatting trainer (rasterizer, analytic backward pass, Adam) with the PCAsplat local-PCA regulariser, running in a browser tab (not verified to be the first).",
+  "description": "Orbit a pre-trained Lego bulldozer splat, retrain it live on your GPU, or upload your own photos to reconstruct a splat and download it as .ply or .splat.",
+  "howItWorks": "A WGSL tile-based rasterizer with analytic forward and backward passes and fused Adam trains 3D Gaussians against photos. CPU densification clones, splits and prunes. The PCAsplat regulariser computes a local PCA over each Gaussian's 16 nearest neighbours to flatten surfaces and align normals. Colour is SH0 only; poses for uploaded photos come from an orbit prior with photometric refinement, or exact from transforms.json.",
+  "controls": "Drag to orbit, wheel or pinch to zoom. Train from scratch starts live training; Show demo returns to the pre-trained scene; Reconstruct my photos trains on uploaded images; .ply and .splat download the result. GPU use sets how hard the tab works."
 }
