@@ -1,19 +1,35 @@
 {
   "slug": "splat-studio",
   "title": "Splat Studio",
-  "tagline": "Train a 3D Gaussian Splat from photos live in your browser GPU, then download it.",
+  "tagline": "Turn a phone video or photos into an explorable 3D scene, trained live on your own graphics card.",
   "kind": "tool",
-  "tags": ["graphics", "webgpu", "research", "3d", "interactive"],
-  "date": "2026-10-10",
-  "builtBy": "Virtual Company",
+  "tags": [
+    "3d",
+    "gaussian splatting",
+    "webgpu",
+    "reconstruction",
+    "photogrammetry"
+  ],
   "entry": "demo/index.html",
+  "date": "2026-10-11",
+  "description": "A complete 3D Gaussian Splatting trainer and viewer that runs in the browser tab with WebGPU. Try the pre-trained vintage camera (30.8 dB on photos the trainer never saw) or a real scanned teddy bear (36.7 dB, soft fur), then watch a scene learn from scratch, or add your own photos or a video. The page works out where each photo was taken (its own structure-from-motion), picks sharp video frames, down-weights blurry ones, evens out brightness differences between photos, can cut one object out of a cluttered background or keep a whole room, and trains in 200, 400 or 800 pixel quality. Everything runs locally; nothing is uploaded.\n\nReproduced from the paper: the local-PCA surface regulariser (eigenvalue loss and normal alignment). Added around it: tile-based WebGPU rasteriser with analytic gradients, SSIM loss, view-dependent colour (SH degree 1), importance pruning, joint camera refinement, Blur-Trap style random splitting, compact demo files, and a from-scratch camera solver.\n\nNot reproduced: the paper's DTU / Tanks and Temples / mesh and Poisson experiments, learned pruning masks, and higher SH degrees. Camera solving is a compact home-made solver, not COLMAP; it needs smooth, overlapping, textured captures. Object cut-out is automatic and imperfect.\n\nDemo assets: Camera 01 by Rajil Jose Macatangay via Poly Haven (CC0); teddy bear from Google Research Scanned Objects (CC BY 4.0, Google LLC 2020).",
+  "novelty": "No known in-browser WebGPU implementation of PCAsplat combined with on-device camera solving (not verified).",
+  "howItWorks": "Blobs (3D Gaussians) are drawn from each photo's camera, compared with the real photo, and nudged by analytic gradients computed in WGSL shaders. PCAsplat looks at each blob's 16 nearest neighbours and pulls blobs onto thin surfaces. For your own media, Harris/BRIEF features, RANSAC and bundle adjustment solve the cameras first.",
+  "controls": "Drag to orbit, right-drag or two fingers to pan, scroll or pinch to zoom. Press F (or Walk around) for first-person mode: click to capture the mouse, W A S D to walk, Shift to run, Q / E down and up, scroll for speed, Esc to release. Pick a demo or switch to Use my own.",
+  "builtBy": "Claude (Anthropic)",
   "paper": {
     "title": "PCAsplat: Gaussian Splatting with Local PCA Regularization",
     "arxiv": "2610.11011",
-    "authors": ["Vitor Matias", "Filipe Nascimento", "Kiyohiro Nakayama", "João Paulo Lima", "Márcus Lobo", "Gordon Wetzstein", "Leonidas Guibas", "Afonso Paiva", "Tiago Novello"]
-  },
-  "novelty": "A from-scratch WebGPU 3D Gaussian Splatting trainer (rasterizer, analytic backward pass, Adam) with the PCAsplat local-PCA regulariser, running in a browser tab (not verified to be the first).",
-  "description": "Orbit a pre-trained Lego bulldozer splat, retrain it live on your GPU, or upload your own photos to reconstruct a splat and download it as .ply or .splat.",
-  "howItWorks": "A WGSL tile-based rasterizer with analytic forward and backward passes and fused Adam trains 3D Gaussians against photos. CPU densification clones, splits and prunes. The PCAsplat regulariser computes a local PCA over each Gaussian's 16 nearest neighbours to flatten surfaces and align normals. Colour is SH degree 0 only (no view-dependent effects); there is no SSIM loss. Uploaded-photo poses use an orbit prior with photometric refinement unless transforms.json provides exact poses; refinement has only been validated on already-correct poses. On clean synthetic data, PCAsplat costs about 0.66 dB PSNR in exchange for roughly 3x thinner surfaces and about 96% normal alignment; benefit on noisy real photos is not measured.",
-  "controls": "Drag to orbit, wheel or pinch to zoom. Train from scratch starts live training; Show demo returns to the pre-trained scene; Reconstruct my photos trains on uploaded images; .ply and .splat download the result. GPU use sets how hard the tab works."
+    "authors": [
+      "Vitor Matias",
+      "Filipe Nascimento",
+      "Kiyohiro Nakayama",
+      "João Paulo Lima",
+      "Márcus Lobo",
+      "Gordon Wetzstein",
+      "Leonidas Guibas",
+      "Afonso Paiva"
+    ],
+    "url": "https://arxiv.org/abs/2610.11011"
+  }
 }
