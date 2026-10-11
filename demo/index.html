@@ -2003,7 +2003,7 @@ function packRGB(rgba, n) { const o = new Uint32Array(n); const u = new Uint32Ar
 function down2(rgba, W, H) { const w = W >> 1, h = H >> 1, o = new Uint8ClampedArray(w * h * 4); for (let y = 0; y < h; y++) for (let x = 0; x < w; x++) for (let k = 0; k < 4; k++) { const a = (2 * y * W + 2 * x) * 4 + k; o[(y * w + x) * 4 + k] = (rgba[a] + rgba[a + 4] + rgba[a + W * 4] + rgba[a + W * 4 + 4]) / 4; } return o; }
 
 // ---------- dataset ----------
-const DEMOS = { cam: { sog: 'data/camera.sog', meta: 'data/camera.meta.json', set: 'data/camera_400.json', name: 'Vintage camera' }, teddy: { sog: 'data/teddy.sog', meta: 'data/teddy.meta.json', set: 'data/teddy_400.json', name: 'Teddy bear' } };
+const DEMOS = { cam: { sog: 'data/camera.bin', meta: 'data/camera.meta.json', set: 'data/camera_400.json', name: 'Vintage camera' }, teddy: { sog: 'data/teddy.bin', meta: 'data/teddy.meta.json', set: 'data/teddy_400.json', name: 'Teddy bear' } };
 async function loadSet(key) {
   const D = await (await fetch(DEMOS[key || 'cam'].set)).json(), W = D.size, H = D.size;
   const all = [], cams = [];
