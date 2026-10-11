@@ -1,4 +1,4 @@
-﻿{
+{
   "slug": "splat-studio",
   "title": "Splat Studio",
   "tagline": "Train a 3D Gaussian Splat from photos live in your browser GPU, then download it.",
@@ -14,6 +14,6 @@
   },
   "novelty": "A from-scratch WebGPU 3D Gaussian Splatting trainer (rasterizer, analytic backward pass, Adam) with the PCAsplat local-PCA regulariser, running in a browser tab (not verified to be the first).",
   "description": "Orbit a pre-trained Lego bulldozer splat, retrain it live on your GPU, or upload your own photos to reconstruct a splat and download it as .ply or .splat.",
-  "howItWorks": "A WGSL tile-based rasterizer with analytic forward and backward passes and fused Adam trains 3D Gaussians against photos. CPU densification clones, splits and prunes. The PCAsplat regulariser computes a local PCA over each Gaussian's 16 nearest neighbours to flatten surfaces and align normals. Colour is SH0 only; poses for uploaded photos come from an orbit prior with photometric refinement, or exact from transforms.json.",
+  "howItWorks": "A WGSL tile-based rasterizer with analytic forward and backward passes and fused Adam trains 3D Gaussians against photos. CPU densification clones, splits and prunes. The PCAsplat regulariser computes a local PCA over each Gaussian's 16 nearest neighbours to flatten surfaces and align normals. Colour is SH degree 0 only (no view-dependent effects); there is no SSIM loss. Uploaded-photo poses use an orbit prior with photometric refinement unless transforms.json provides exact poses; refinement has only been validated on already-correct poses. On clean synthetic data, PCAsplat costs about 0.66 dB PSNR in exchange for roughly 3x thinner surfaces and about 96% normal alignment; benefit on noisy real photos is not measured.",
   "controls": "Drag to orbit, wheel or pinch to zoom. Train from scratch starts live training; Show demo returns to the pre-trained scene; Reconstruct my photos trains on uploaded images; .ply and .splat download the result. GPU use sets how hard the tab works."
 }
